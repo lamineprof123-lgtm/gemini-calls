@@ -1,17 +1,28 @@
 {
-  "signal_at": "2026-11-09T13:30:20.102205+00:00",
+  "signal_at": "2026-11-09T13:35:20.100188+00:00",
   "tz": "Asia/Dubai",
   "model": "gemini-3.6-flash",
   "dry_run": false,
-  "trades": [],
+  "trades": [
+    {
+      "symbol": "US100",
+      "name": "NASDAQ",
+      "action": "SELL",
+      "entry": 27181.7,
+      "stop_loss": 27278.0,
+      "take_profit": 26915.0,
+      "rr": 2.769,
+      "confidence": 0.65,
+      "digits": 2
+    }
+  ],
   "no_trade": [
     "XAUUSD",
     "EURUSD",
     "GBPUSD",
-    "US100",
     "BTCUSD"
   ],
   "analysis_failed": false,
   "breaker_halted": false,
-  "written_at": "2026-11-09T13:33:01.628231+00:00"
+  "written_at": "2026-11-09T13:35:41.585965+00:00"
 }
