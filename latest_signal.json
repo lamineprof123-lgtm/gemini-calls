@@ -1,0 +1,28 @@
+{
+  "signal_at": "2026-11-09T13:01:23.464379+00:00",
+  "tz": "Asia/Dubai",
+  "model": "gemini-3.6-flash",
+  "dry_run": false,
+  "trades": [
+    {
+      "symbol": "BTCUSD",
+      "name": "BITCOIN",
+      "action": "BUY",
+      "entry": 74920.2,
+      "stop_loss": 74640.0,
+      "take_profit": 75779.89,
+      "rr": 3.068,
+      "confidence": 0.72,
+      "digits": 2
+    }
+  ],
+  "no_trade": [
+    "XAUUSD",
+    "EURUSD",
+    "GBPUSD",
+    "US100"
+  ],
+  "analysis_failed": false,
+  "breaker_halted": false,
+  "written_at": "2026-11-09T13:14:37.408993+00:00"
+}

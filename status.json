@@ -1,0 +1,8 @@
+{
+  "state": "paused",
+  "interval_minutes": 5,
+  "align_offset_seconds": 20,
+  "tz": "Asia/Dubai",
+  "next_run_at": null,
+  "updated_at": "2026-11-09T13:07:36.166317+00:00"
+}
