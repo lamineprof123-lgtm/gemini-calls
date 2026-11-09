@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0E1117">
-<title>Signals</title>
+<title>Project Blue Bird</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   :root {
     --bg: #0E1117; --fg: #E6EDF3; --muted: #7D8590; --faint: #3B424C; --line: #1C2129;
@@ -16,8 +19,14 @@
   html, body { height: 100%; background: var(--bg); color: var(--fg); font-family: var(--sans);
                -webkit-font-smoothing: antialiased; }
   body { display: flex; flex-direction: column; min-height: 100dvh; padding: 28px 24px 20px; }
-  header { display: flex; justify-content: flex-end; align-items: center; font-size: 12px;
+  header { display: flex; justify-content: space-between; align-items: center; font-size: 12px;
            letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .brand { display: inline-flex; align-items: center; line-height: 0; text-decoration: none;
+           flex-shrink: 0; }
+  .brand img { height: 40px; width: auto; display: block; }
+  @media (min-width: 900px) {
+    .brand img { height: 48px; }
+  }
   .state { display: inline-flex; align-items: center; gap: 8px; letter-spacing: .16em; }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--buy); }
   .state.paused .dot { background: var(--amber); }
@@ -81,6 +90,9 @@
 </head>
 <body>
 <header>
+  <a class="brand" href="/" aria-label="Project Blue Bird">
+    <img src="logo-bluebird.png" alt="Project Blue Bird" width="58" height="48">
+  </a>
   <div class="state" id="state"><span class="dot"></span><span id="stateText">—</span></div>
 </header>
 
@@ -116,6 +128,7 @@
                                  // covers Gemini retries + GitHub Pages build/CDN delay); then back to countdown
   const OFFLINE_AFTER_S = 900;   // "Offline" only if status.json has not changed for 15 min (> 2 cycles + Pages delay)
   let status = null, sig = null, seenKey = null, showUntil = 0;
+  const previewForce = new URLSearchParams(location.search).get('preview'); // countdown|signal|analyzing|paused
   const $ = id => document.getElementById(id);
 
   async function getJSON(path) {
@@ -218,6 +231,22 @@
       const nxt = schedule(now).next;
       $('count').textContent = mmss((nxt - now) / 1000);
       $('countAt').textContent = `at ${hm(new Date(nxt).toISOString())} ${city()}`;
+    }
+    if (previewForce === 'countdown') view = 'v-countdown';
+    else if (previewForce === 'signal') view = 'v-signal';
+    else if (previewForce === 'analyzing') view = 'v-analyzing';
+    else if (previewForce === 'paused') view = 'v-paused';
+    if (previewForce === 'countdown' && status) {
+      const nxt = schedule(now).next;
+      $('count').textContent = mmss((nxt - now) / 1000);
+      $('countAt').textContent = `at ${hm(new Date(nxt).toISOString())} ${city()}`;
+    }
+    if (previewForce === 'signal' && sig) {
+      const n0 = sig.trades ? sig.trades.length : 0;
+      if (!$('trades').innerHTML) {
+        $('trades').innerHTML = n0 ? tradesHTML(sig) : '<div class="notrade">No trade</div>';
+        $('trades').className = 'n' + n0 + (n0 > 1 ? ' multi' : '');
+      }
     }
     show(view);
     const n = sig && sig.trades ? sig.trades.length : 0;
