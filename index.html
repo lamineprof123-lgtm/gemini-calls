@@ -102,14 +102,135 @@
   .pausedBig { font-size: clamp(44px, 12vw, 72px); font-weight: 300; letter-spacing: -.02em; color: var(--amber);
                margin-bottom: 18px; }
   .notrade { font-size: clamp(44px, 12vw, 72px); font-weight: 300; letter-spacing: -.02em; color: var(--muted); }
+
+  /* —— Signal FX (BUY/SELL only): ambient lights + pop —— */
+  .hdr-right { display: inline-flex; align-items: center; gap: 14px; }
+  .sound-btn {
+    appearance: none; border: 0; background: transparent; color: var(--muted);
+    width: 34px; height: 34px; border-radius: 10px; display: inline-flex;
+    align-items: center; justify-content: center; cursor: pointer;
+    transition: color .2s ease, background .2s ease;
+  }
+  .sound-btn:hover { color: var(--fg); background: rgba(255,255,255,.04); }
+  .sound-btn.on { color: #7DD3FC; }
+  .sound-btn svg { width: 18px; height: 18px; display: block; }
+  .sound-btn .ico-off { display: none; }
+  .sound-btn:not(.on) .ico-on { display: none; }
+  .sound-btn:not(.on) .ico-off { display: block; }
+
+  #fx-lights {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    opacity: 0; transition: opacity .7s ease;
+  }
+  body.fx-on #fx-lights { opacity: 1; }
+  body.fx-out #fx-lights { opacity: 0; transition: opacity .6s ease; }
+  header, main { position: relative; z-index: 1; }
+  .fx-blob {
+    position: absolute; width: 52vmax; height: 52vmax; border-radius: 50%;
+    filter: blur(82px); opacity: .72; will-change: transform;
+    mix-blend-mode: screen;
+  }
+  .fx-blob.b1 {
+    background: radial-gradient(circle, rgba(0,196,255,.98) 0%, rgba(0,180,255,.55) 38%, rgba(0,180,255,0) 70%);
+    top: -16%; left: -20%; animation: fxDrift1 16s ease-in-out infinite;
+  }
+  .fx-blob.b2 {
+    background: radial-gradient(circle, rgba(0,255,140,.95) 0%, rgba(0,230,118,.55) 40%, rgba(0,230,118,0) 70%);
+    bottom: -18%; right: -16%; animation: fxDrift2 18s ease-in-out infinite;
+  }
+  .fx-blob.b3 {
+    background: radial-gradient(circle, rgba(56,224,255,.92) 0%, rgba(34,211,238,.5) 42%, rgba(34,211,238,0) 72%);
+    top: 26%; right: -24%; width: 44vmax; height: 44vmax;
+    animation: fxDrift3 14s ease-in-out infinite; opacity: .62;
+  }
+  .fx-blob.b4 {
+    background: radial-gradient(circle, rgba(0,196,255,.75) 0%, rgba(0,230,118,.55) 42%, transparent 72%);
+    bottom: 6%; left: -18%; width: 46vmax; height: 46vmax;
+    animation: fxDrift4 20s ease-in-out infinite; opacity: .58;
+  }
+  @keyframes fxDrift1 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(12vw, 10vh) scale(1.12); }
+  }
+  @keyframes fxDrift2 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(-10vw, -12vh) scale(1.1); }
+  }
+  @keyframes fxDrift3 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(-14vw, 8vh) scale(1.15); }
+  }
+  @keyframes fxDrift4 {
+    0%,100% { transform: translate(0,0) scale(1.05); }
+    50% { transform: translate(10vw, -8vh) scale(1); }
+  }
+
+  #v-signal.fx-trade { animation: none; }
+  #v-signal.fx-trade.on.pop {
+    animation: sigPop .72s cubic-bezier(.2,1.15,.35,1) both;
+  }
+  #v-signal.fx-trade.on.pop #trades {
+    filter: drop-shadow(0 0 0 rgba(0,180,255,0));
+    animation: sigGlowPulse .72s ease-out both;
+  }
+  @keyframes sigPop {
+    0%   { opacity: 0; transform: scale(.9); }
+    55%  { opacity: 1; transform: scale(1.04); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes sigGlowPulse {
+    0%   { filter: drop-shadow(0 0 0 rgba(0,180,255,0)); }
+    40%  { filter: drop-shadow(0 0 28px rgba(0,180,255,.35))
+                   drop-shadow(0 0 48px rgba(0,230,118,.22)); }
+    100% { filter: drop-shadow(0 0 12px rgba(0,180,255,.12)); }
+  }
+  /* Keep signal text readable over lights */
+  #v-signal.fx-trade #trades.n1 .trade,
+  #v-signal.fx-trade #trades.multi .trade {
+    background: rgba(14, 17, 23, 0.90);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(28, 33, 41, 0.95);
+  }
+  @media (max-width: 899px) {
+    #v-signal.fx-trade #trades.n1 .trade {
+      background: rgba(14, 17, 23, 0.86);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 18px;
+      padding: 22px 18px 16px;
+      border: 1px solid rgba(28, 33, 41, 0.8);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fx-blob { animation: none !important; }
+    #v-signal.fx-trade.on.pop,
+    #v-signal.fx-trade.on.pop #trades { animation: fade .45s ease both; filter: none; }
+  }
 </style>
 </head>
 <body>
+<div id="fx-lights" aria-hidden="true">
+  <div class="fx-blob b1"></div>
+  <div class="fx-blob b2"></div>
+  <div class="fx-blob b3"></div>
+  <div class="fx-blob b4"></div>
+</div>
 <header>
   <a class="brand" href="/" aria-label="Project Blue Bird">
     <img src="logo-bluebird.png" alt="Project Blue Bird" width="82" height="68">
   </a>
-  <div class="state" id="state"><span class="dot"></span><span id="stateText">—</span></div>
+  <div class="hdr-right">
+    <button type="button" class="sound-btn" id="soundBtn" aria-label="Enable signal sound" aria-pressed="false" title="Sound off">
+      <svg class="ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>
+      </svg>
+      <svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/>
+      </svg>
+    </button>
+    <div class="state" id="state"><span class="dot"></span><span id="stateText">—</span></div>
+  </div>
 </header>
 
 <main>
@@ -146,6 +267,67 @@
   let status = null, sig = null, seenKey = null, showUntil = 0;
   const previewForce = new URLSearchParams(location.search).get('preview'); // countdown|signal|analyzing|paused
   const $ = id => document.getElementById(id);
+  const SOUND_KEY = 'bb_sound';
+  let soundOn = localStorage.getItem(SOUND_KEY) === '1';
+  let audioCtx = null, lastChimeKey = null, popArmed = false;
+
+  function syncSoundBtn() {
+    const btn = $('soundBtn');
+    if (!btn) return;
+    btn.classList.toggle('on', soundOn);
+    btn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+    btn.setAttribute('aria-label', soundOn ? 'Mute signal sound' : 'Enable signal sound');
+    btn.title = soundOn ? 'Sound on' : 'Sound off';
+  }
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  /** Soft two-tone chime (C6 → E6), ~0.55s each; plays 4× with ~200ms gaps (fx_chime_preview_x4.wav) */
+  function playChime() {
+    if (!soundOn) return;
+    try {
+      const ctx = ensureAudio();
+      const now = ctx.currentTime;
+      const notes = [[1046.5, 0.0, 0.42], [1318.5, 0.08, 0.36]];
+      const chimeLen = 0.55, gap = 0.20, reps = 4;
+      for (let r = 0; r < reps; r++) {
+        const t0 = now + r * (chimeLen + gap);
+        const master = ctx.createGain();
+        master.gain.setValueAtTime(0.0001, t0);
+        master.gain.exponentialRampToValueAtTime(0.22, t0 + 0.02);
+        master.gain.exponentialRampToValueAtTime(0.0001, t0 + chimeLen);
+        master.connect(ctx.destination);
+        notes.forEach(([freq, delay, dur]) => {
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = 'sine';
+          o.frequency.setValueAtTime(freq, t0 + delay);
+          g.gain.setValueAtTime(0.0001, t0 + delay);
+          g.gain.exponentialRampToValueAtTime(0.9, t0 + delay + 0.015);
+          g.gain.exponentialRampToValueAtTime(0.0001, t0 + delay + dur);
+          o.connect(g); g.connect(master);
+          o.start(t0 + delay); o.stop(t0 + delay + dur + 0.02);
+        });
+      }
+    } catch (e) { /* ignore */ }
+  }
+  $('soundBtn').addEventListener('click', () => {
+    soundOn = !soundOn;
+    localStorage.setItem(SOUND_KEY, soundOn ? '1' : '0');
+    syncSoundBtn();
+    if (soundOn) { ensureAudio(); playChime(); }
+  });
+  syncSoundBtn();
+
+  function hasTrades(l) { return !!(l && l.trades && l.trades.length); }
+  function setFx(active, fadingOut) {
+    document.body.classList.toggle('fx-on', !!active && !fadingOut);
+    document.body.classList.toggle('fx-out', !!fadingOut);
+    const vs = $('v-signal');
+    vs.classList.toggle('fx-trade', !!active || !!fadingOut);
+  }
 
   async function getJSON(path) {
     try {
@@ -174,6 +356,12 @@
     $('trades').innerHTML = n ? tradesHTML(l) : '<div class="notrade">No trade</div>';
     $('trades').className = 'n' + n + (n > 1 ? ' multi' : '');
     $('sigQuiet').textContent = n && l.no_trade && l.no_trade.length ? 'No trade · ' + l.no_trade.join(', ') : '';
+    if (n && !first) {
+      popArmed = true;
+      if (key !== lastChimeKey) { lastChimeKey = key; playChime(); }
+    } else if (n && first && showUntil > Date.now()) {
+      popArmed = true;  // remainder of a fresh signal: still pop, no chime on reload
+    }
   }
 
   const tz = () => (sig && sig.tz) || (status && status.tz) || undefined;
@@ -268,6 +456,18 @@
     const n = sig && sig.trades ? sig.trades.length : 0;
     document.querySelector('main').classList.toggle('wide', view === 'v-signal' && n > 1);
 
+    // Ambient lights + pop only for real BUY/SELL (not "No trade")
+    const tradeSignal = view === 'v-signal' && n > 0;
+    const fading = tradeSignal && $('v-signal').classList.contains('out');
+    setFx(tradeSignal, fading);
+    const vs = $('v-signal');
+    if (tradeSignal && popArmed) {
+      vs.classList.remove('pop');
+      void vs.offsetWidth;  // restart animation
+      vs.classList.add('pop');
+      popArmed = false;
+    }
+    if (view !== 'v-signal') vs.classList.remove('pop');
   }
 
   poll();
