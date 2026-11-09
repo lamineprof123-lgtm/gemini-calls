@@ -1,5 +1,5 @@
 {
-  "signal_at": "2026-11-09T14:50:20.098788+00:00",
+  "signal_at": "2026-11-09T14:55:20.102475+00:00",
   "tz": "Asia/Dubai",
   "model": null,
   "dry_run": false,
@@ -13,5 +13,5 @@
   ],
   "analysis_failed": true,
   "breaker_halted": false,
-  "written_at": "2026-11-09T14:51:06.890741+00:00"
+  "written_at": "2026-11-09T14:55:21.250002+00:00"
 }
