@@ -3,8 +3,8 @@
   "interval_minutes": 5,
   "align_offset_seconds": 20,
   "tz": "Asia/Dubai",
-  "next_run_at": "2026-11-09T16:30:20+00:00",
-  "updated_at": "2026-11-09T16:25:47.418169+00:00",
-  "last_cycle_started_at": "2026-11-09T16:25:20.085438+00:00",
-  "last_cycle_finished_at": "2026-11-09T16:25:47.418055+00:00"
+  "next_run_at": "2026-11-09T16:35:20+00:00",
+  "updated_at": "2026-11-09T16:31:25.049872+00:00",
+  "last_cycle_started_at": "2026-11-09T16:30:20.102187+00:00",
+  "last_cycle_finished_at": "2026-11-09T16:31:25.049805+00:00"
 }
