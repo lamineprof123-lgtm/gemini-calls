@@ -23,9 +23,9 @@
            letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
   .brand { display: inline-flex; align-items: center; line-height: 0; text-decoration: none;
            flex-shrink: 0; }
-  .brand img { height: 40px; width: auto; display: block; }
+  .brand img { height: 56px; width: auto; display: block; }
   @media (min-width: 900px) {
-    .brand img { height: 48px; }
+    .brand img { height: 68px; }
   }
   .state { display: inline-flex; align-items: center; gap: 8px; letter-spacing: .16em; }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--buy); }
@@ -41,7 +41,23 @@
   @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .eyebrow { font-size: 13px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
   .count { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 300;
-           font-size: clamp(88px, 27vw, 176px); line-height: 1; letter-spacing: -.04em; margin: 22px 0 18px; }
+           font-size: clamp(88px, 27vw, 176px); line-height: 1; letter-spacing: -.04em; margin: 22px 0 18px;
+           background: linear-gradient(100deg,
+             #7DD3FC 0%, #00B4FF 18%, #22D3EE 36%, #00E676 55%, #00B4FF 72%, #7DD3FC 88%, #00E676 100%);
+           background-size: 220% 100%;
+           -webkit-background-clip: text; background-clip: text;
+           color: transparent; -webkit-text-fill-color: transparent;
+           filter: drop-shadow(0 0 10px rgba(0, 180, 255, 0.28))
+                   drop-shadow(0 0 22px rgba(0, 230, 118, 0.16));
+           animation: countGlow 7.5s ease-in-out infinite; }
+  @keyframes countGlow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .count { animation: none; background-position: 40% 50%; }
+  }
   .sub { font-size: 15px; color: var(--muted); }
   .analyzing { font-size: clamp(34px, 9vw, 52px); font-weight: 300; letter-spacing: -.01em; margin: 6px 0 18px; }
   .analyzing i { font-style: normal; animation: blink 1.4s infinite; }
@@ -91,7 +107,7 @@
 <body>
 <header>
   <a class="brand" href="/" aria-label="Project Blue Bird">
-    <img src="logo-bluebird.png" alt="Project Blue Bird" width="58" height="48">
+    <img src="logo-bluebird.png" alt="Project Blue Bird" width="82" height="68">
   </a>
   <div class="state" id="state"><span class="dot"></span><span id="stateText">—</span></div>
 </header>
