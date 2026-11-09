@@ -16,7 +16,7 @@
   html, body { height: 100%; background: var(--bg); color: var(--fg); font-family: var(--sans);
                -webkit-font-smoothing: antialiased; }
   body { display: flex; flex-direction: column; min-height: 100dvh; padding: 28px 24px 20px; }
-  header { display: flex; justify-content: space-between; align-items: center; font-size: 12px;
+  header { display: flex; justify-content: flex-end; align-items: center; font-size: 12px;
            letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
   .state { display: inline-flex; align-items: center; gap: 8px; letter-spacing: .16em; }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--buy); }
@@ -77,12 +77,10 @@
   .pausedBig { font-size: clamp(44px, 12vw, 72px); font-weight: 300; letter-spacing: -.02em; color: var(--amber);
                margin-bottom: 18px; }
   .notrade { font-size: clamp(44px, 12vw, 72px); font-weight: 300; letter-spacing: -.02em; color: var(--muted); }
-  footer { text-align: center; font-size: 11px; color: var(--faint); letter-spacing: .06em; }
 </style>
 </head>
 <body>
 <header>
-  <div>Signals</div>
   <div class="state" id="state"><span class="dot"></span><span id="stateText">—</span></div>
 </header>
 
@@ -95,8 +93,7 @@
 
   <section class="view" id="v-analyzing">
     <div class="eyebrow">Signal time</div>
-    <div class="analyzing">Analyzing<i>.</i><i>.</i><i>.</i></div>
-    <div class="sub">Reading the latest closed candles</div>
+    <div class="analyzing">Reading The Market<i>.</i><i>.</i><i>.</i></div>
   </section>
 
   <section class="view" id="v-signal">
@@ -110,7 +107,6 @@
   </section>
 </main>
 
-<footer id="foot"></footer>
 
 <script>
 (() => {
@@ -227,13 +223,6 @@
     const n = sig && sig.trades ? sig.trades.length : 0;
     document.querySelector('main').classList.toggle('wide', view === 'v-signal' && n > 1);
 
-    const bits = [];
-    if (sig) bits.push(`${hm(sig.signal_at)} ${city()}`, sig.model || '');
-    if (sig && sig.dry_run) bits.push('test data');
-    if (sig && sig.analysis_failed) bits.push('analysis unavailable');
-    if (sig && sig.breaker_halted) bits.push('daily loss limit hit');
-    bits.push('not financial advice');
-    $('foot').textContent = bits.filter(Boolean).join(' · ');
   }
 
   poll();
