@@ -1,10 +1,10 @@
 {
-  "state": "running",
+  "state": "paused",
   "interval_minutes": 5,
   "align_offset_seconds": 20,
   "tz": "Asia/Dubai",
-  "next_run_at": "2026-11-09T15:20:20+00:00",
-  "updated_at": "2026-11-09T15:15:21.386180+00:00",
+  "next_run_at": null,
+  "updated_at": "2026-11-09T15:16:41.632082+00:00",
   "last_cycle_started_at": "2026-11-09T15:15:20.101478+00:00",
   "last_cycle_finished_at": "2026-11-09T15:15:21.386003+00:00"
 }
