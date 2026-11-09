@@ -115,7 +115,10 @@
 <script>
 (() => {
   const SIGNAL_VISIBLE_MS = 18000;             // a new signal is shown for 18 s, then the countdown returns
-  const POLL_MS = 2000, GRACE_S = 240;         // after next_run_at: "Analyzing" up to GRACE_S, then "Offline"
+  const POLL_MS = 3000;
+  const ANALYZE_MAX_S = 270;     // after a boundary, show "Analyzing" until that cycle's signal arrives (max 4.5 min,
+                                 // covers Gemini retries + GitHub Pages build/CDN delay); then back to countdown
+  const OFFLINE_AFTER_S = 900;   // "Offline" only if status.json has not changed for 15 min (> 2 cycles + Pages delay)
   let status = null, sig = null, seenKey = null, showUntil = 0;
   const $ = id => document.getElementById(id);
 
@@ -159,17 +162,23 @@
   const px = (v, d) => v == null ? '—' : Number(v).toLocaleString('en-US',
                      { minimumFractionDigits: d, maximumFractionDigits: d });
 
+  // Clock-aligned schedule computed client-side (same rule as the loop), so the countdown ticks
+  // even when status.json is stale or cached.
+  function schedule(now) {
+    const step = (status.interval_minutes || 5) * 60000, off = (status.align_offset_seconds || 0) * 1000;
+    const prev = Math.floor((now - off) / step) * step + off;
+    return { prev, next: prev + step };
+  }
+  function signalForCycle(prev) { return sig && Date.parse(sig.signal_at) >= prev - 10000; }
+
   function mode() {
     const now = Date.now();
     if (!status || status.state === 'paused' || status.state === 'stopped') return 'paused';
-    if (status.state === 'analyzing') {
-      const t = Date.parse(status.cycle_started_at || status.updated_at);
-      return now - t > (GRACE_S + 360) * 1000 ? 'offline' : 'analyzing';
-    }
-    const next = Date.parse(status.next_run_at);
-    if (!next) return 'paused';
-    if (now < next) return 'waiting';
-    return now - next < GRACE_S * 1000 ? 'analyzing' : 'offline';
+    if (now - Date.parse(status.updated_at) > OFFLINE_AFTER_S * 1000) return 'offline';
+    const { prev } = schedule(now);
+    const scheduled = status.state === 'analyzing' || Date.parse(status.next_run_at || 0) <= prev + 1000;
+    if (scheduled && now - prev < ANALYZE_MAX_S * 1000 && !signalForCycle(prev)) return 'analyzing';
+    return 'waiting';
   }
 
   function show(id) {
@@ -210,8 +219,9 @@
       view = 'v-analyzing';
     } else {
       view = 'v-countdown';
-      $('count').textContent = mmss((Date.parse(status.next_run_at) - now) / 1000);
-      $('countAt').textContent = `at ${hm(status.next_run_at)} ${city()}`;
+      const nxt = schedule(now).next;
+      $('count').textContent = mmss((nxt - now) / 1000);
+      $('countAt').textContent = `at ${hm(new Date(nxt).toISOString())} ${city()}`;
     }
     show(view);
     const n = sig && sig.trades ? sig.trades.length : 0;
