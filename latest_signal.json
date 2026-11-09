@@ -1,7 +1,7 @@
 {
-  "signal_at": "2026-11-09T15:00:20.098881+00:00",
+  "signal_at": "2026-11-09T15:05:20.107176+00:00",
   "tz": "Asia/Dubai",
-  "model": null,
+  "model": "gemini-3.6-flash",
   "dry_run": false,
   "trades": [],
   "no_trade": [
@@ -11,7 +11,7 @@
     "US100",
     "BTCUSD"
   ],
-  "analysis_failed": true,
+  "analysis_failed": false,
   "breaker_halted": false,
-  "written_at": "2026-11-09T15:00:22.550723+00:00"
+  "written_at": "2026-11-09T15:05:34.687279+00:00"
 }
