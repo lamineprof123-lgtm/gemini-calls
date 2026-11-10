@@ -1,6 +1,6 @@
 {
   "state": "running",
-  "interval_minutes": 5,
+  "interval_minutes": 1,
   "align_offset_seconds": 20,
   "tz": "Asia/Dubai",
   "next_run_at": "2026-11-10T15:15:20+00:00",
