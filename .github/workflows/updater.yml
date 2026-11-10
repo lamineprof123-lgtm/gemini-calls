@@ -33,10 +33,20 @@ jobs:
           }
           EOF
 
+      - name: Append to History Log
+        run: |
+          # Create history.json if it doesn't exist yet
+          [ ! -f history.json ] && echo "[]" > history.json
+          
+          # If a new signal exists, append it to history.json using a temp file
+          if [ -f latest_signal.json ]; then
+            jq --slurp '.[0] + [.[1]]' history.json latest_signal.json > tmp.json && mv tmp.json history.json
+          fi
+
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add status.json
-          git commit -m "Auto-update status every 1 min [skip ci]" || exit 0
+          git add status.json history.json
+          git commit -m "Auto-update status and log history [skip ci]" || exit 0
           git push
