@@ -2,7 +2,7 @@ name: Auto Status Updater
 
 on:
   schedule:
-    - cron: '* * * * *' # Runs every 1 minute
+    - cron: '* * * * *'
   workflow_dispatch:
 
 permissions:
@@ -20,7 +20,6 @@ jobs:
           date_iso=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           next_iso=$(date -u -d "+1 minute" +"%Y-%m-%dT%H:%M:%SZ")
           
-          # Update status.json with current live timestamps
           cat <<EOF > status.json
           {
             "state": "running",
@@ -39,5 +38,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add status.json
-          git commit -m "Auto-update status heartbeat every 1 min [skip ci]" || exit 0
+          git commit -m "Auto-update status every 1 min [skip ci]" || exit 0
           git push
