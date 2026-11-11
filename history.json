@@ -38,5 +38,9 @@
   {
     "analysis_failed": true,
     "error": "Chart image not found"
+  },
+  {
+    "analysis_failed": true,
+    "error": "Chart image not found"
   }
 ]
